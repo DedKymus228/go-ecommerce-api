@@ -40,3 +40,6 @@ bin/
 
 # TODO
 TODO.md
+
+# Config files
+config.yaml
