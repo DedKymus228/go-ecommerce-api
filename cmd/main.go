@@ -2,7 +2,10 @@ package main
 
 import (
 	"e-commerce-api/internal/infrastructure/config"
+	mydb "e-commerce-api/internal/repository/db/sqlc"
 	logging "e-commerce-api/pkg/logger"
+	"e-commerce-api/pkg/postgre"
+	"log"
 
 	"go.uber.org/zap"
 )
@@ -15,6 +18,17 @@ func main() {
 
 	logger.Info("Logger is set up",
 		zap.String("env:", cfg.Env))
+
+	dbpool, err := postgre.NewPgxPool(cfg.DB)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer dbpool.Close()
+
+	db := mydb.New(dbpool)
+	_ = db
+
+	logger.Info("Database connection established")
 }
 
-// loggin db serv
+// db serv migration

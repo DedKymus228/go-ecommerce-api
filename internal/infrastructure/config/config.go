@@ -3,21 +3,15 @@ package config
 import (
 	"log"
 
+	"e-commerce-api/pkg/postgre"
+
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
-	Env string    `yaml:"env" env-default:"dev"`
-	DB  DBConfig  `yaml:"db"`
-	App AppConfig `yaml:"app"`
-}
-
-type DBConfig struct {
-	Username string `yaml:"username" env-required:"true"`
-	Password string `yaml:"password"`
-	Host     string `yaml:"host" env-default:"localhost"`
-	Port     string `yaml:"port" env-default:"5432"`
-	Database string `yaml:"database"`
+	Env string           `yaml:"env" env-default:"dev"`
+	DB  postgre.DBConfig `yaml:"db"`
+	App AppConfig        `yaml:"app"`
 }
 
 type AppConfig struct {
