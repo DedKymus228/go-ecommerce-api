@@ -15,11 +15,12 @@ type DBConfig struct {
 	Host     string `yaml:"host" env-default:"localhost"`
 	Port     string `yaml:"port" env-default:"5432"`
 	Database string `yaml:"database"`
+	SSLMode  string `yaml:"sslmode"`
 }
 
 func NewPgxPool(cfg DBConfig) (*pgxpool.Pool, error) {
-	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?search_path=public",
-		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database)
+	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&&search_path=public",
+		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.SSLMode)
 
 	poolConfig, err := pgxpool.ParseConfig(connStr)
 	if err != nil {

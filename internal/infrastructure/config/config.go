@@ -1,6 +1,7 @@
 package config
 
 import (
+	"e-commerce-api/internal/server"
 	"log"
 
 	"e-commerce-api/pkg/postgre"
@@ -9,13 +10,9 @@ import (
 )
 
 type Config struct {
-	Env string           `yaml:"env" env-default:"dev"`
-	DB  postgre.DBConfig `yaml:"db"`
-	App AppConfig        `yaml:"app"`
-}
-
-type AppConfig struct {
-	Port string `yaml:"serv_port" env-default:"8080"`
+	Env string           `yaml:"env" env-required:"true"`
+	DB  postgre.DBConfig `yaml:"db"  env-required:"true"`
+	App server.AppConfig `yaml:"app" env-required:"true" `
 }
 
 func GetConfig(path string) *Config {

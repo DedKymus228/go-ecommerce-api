@@ -3,6 +3,7 @@ package main
 import (
 	"e-commerce-api/internal/infrastructure/config"
 	mydb "e-commerce-api/internal/repository/db/sqlc"
+	"e-commerce-api/internal/server"
 	logging "e-commerce-api/pkg/logger"
 	"e-commerce-api/pkg/postgre"
 	"log"
@@ -29,6 +30,17 @@ func main() {
 	_ = db
 
 	logger.Info("Database connection established")
+
+	if err = postgre.RunMigrations(cfg.DB); err != nil {
+		logger.Fatal("migrations fault", zap.Error(err))
+	}
+
+	logger.Info("Migrations applied successfully")
+
+	server.Run()
+
+	logger.Info("Server is running")
+
 }
 
-// db serv migration
+//  serv
