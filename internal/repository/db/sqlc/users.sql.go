@@ -8,15 +8,19 @@ package db
 import (
 	"context"
 
+	uuid "github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-    email, password_hash, first_name, last_name, role_id
+    email,
+    password_hash,
+    first_name,
+    last_name
 ) VALUES (
-    $1, $2, $3, $4, $5
-) RETURNING id, email, password_hash, first_name, last_name, role_id, created_at, updated_at
+             $1, $2, $3, $4
+         ) RETURNING id, email, password_hash, first_name, last_name, role_id, created_at, updated_at
 `
 
 type CreateUserParams struct {
@@ -24,7 +28,6 @@ type CreateUserParams struct {
 	PasswordHash string
 	FirstName    pgtype.Text
 	LastName     pgtype.Text
-	RoleID       pgtype.Int4
 }
 
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
@@ -33,7 +36,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		arg.PasswordHash,
 		arg.FirstName,
 		arg.LastName,
-		arg.RoleID,
 	)
 	var i User
 	err := row.Scan(
@@ -47,6 +49,16 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const deleteUser = `-- name: DeleteUser :exec
+DELETE FROM users
+WHERE id = $1
+`
+
+func (q *Queries) DeleteUser(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.Exec(ctx, deleteUser, id)
+	return err
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
@@ -75,7 +87,7 @@ SELECT id, email, password_hash, first_name, last_name, role_id, created_at, upd
 WHERE id = $1 LIMIT 1
 `
 
-func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error) {
+func (q *Queries) GetUserByID(ctx context.Context, id uuid.UUID) (User, error) {
 	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(
@@ -89,4 +101,20 @@ func (q *Queries) GetUserByID(ctx context.Context, id pgtype.UUID) (User, error)
 		&i.UpdatedAt,
 	)
 	return i, err
+}
+
+const updateUserRole = `-- name: UpdateUserRole :exec
+UPDATE users
+SET role_id = $2
+WHERE id = $1
+`
+
+type UpdateUserRoleParams struct {
+	ID     uuid.UUID
+	RoleID pgtype.Int4
+}
+
+func (q *Queries) UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) error {
+	_, err := q.db.Exec(ctx, updateUserRole, arg.ID, arg.RoleID)
+	return err
 }

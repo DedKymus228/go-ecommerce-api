@@ -1,12 +1,8 @@
 package server
 
 import (
-	"context"
-	"e-commerce-api/internal/constants"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
+	"e-commerce-api/internal/infrastructure/config"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -14,21 +10,16 @@ import (
 
 type HandlerAbs struct {
 }
-type AppConfig struct {
-	Port        string        `yaml:"serv_port" env-default:"8080"`
-	SecretJwt   string        `yaml:"secret_jwt" env-required:"true"`
-	RWTimeout   time.Duration `yaml:"rw_timeout" env-default:"10s"`
-	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"120s"`
-}
-
 type Router struct {
 	handler HandlerAbs
 	logger  *zap.Logger
-	config  AppConfig
+	config  config.AppConfig
 	engine  *gin.Engine
+	srv     *http.Server
 }
 
-func NewRouter(logger *zap.Logger, config AppConfig, handler HandlerAbs, engine *gin.Engine) *Router {
+func NewRouter(logger *zap.Logger, config config.AppConfig, handler HandlerAbs) *Router {
+	engine := gin.Default()
 
 	return &Router{
 		handler: handler,
@@ -36,28 +27,4 @@ func NewRouter(logger *zap.Logger, config AppConfig, handler HandlerAbs, engine 
 		config:  config,
 		engine:  engine,
 	}
-}
-
-func (r *Router) Run() {
-	srv := r.engine
-	// nado config
-	srv.Run(":8080")
-
-	srv.GET("/get", func(ctx *gin.Context) {
-		ctx.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-
-}
-
-func (r *Router) Shutdown(fn func(ctx context.Context)) {
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
-	<-quit
-
-	ctx, cancel := context.WithTimeout(context.Background(), constants.ShutdownTime)
-	defer cancel()
-
-	fn(ctx)
 }

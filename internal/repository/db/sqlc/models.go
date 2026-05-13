@@ -5,6 +5,7 @@
 package db
 
 import (
+	uuid "github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
@@ -15,13 +16,13 @@ type Brand struct {
 }
 
 type Cart struct {
-	ID        pgtype.UUID
+	ID        uuid.UUID
 	UserID    pgtype.UUID
 	CreatedAt pgtype.Timestamptz
 }
 
 type CartItem struct {
-	ID        pgtype.UUID
+	ID        uuid.UUID
 	CartID    pgtype.UUID
 	ProductID pgtype.UUID
 	Quantity  int32
@@ -35,7 +36,7 @@ type Category struct {
 }
 
 type Order struct {
-	ID              pgtype.UUID
+	ID              uuid.UUID
 	UserID          pgtype.UUID
 	StatusID        pgtype.Int4
 	TotalAmount     pgtype.Numeric
@@ -45,7 +46,7 @@ type Order struct {
 }
 
 type OrderItem struct {
-	ID              pgtype.UUID
+	ID              uuid.UUID
 	OrderID         pgtype.UUID
 	ProductID       pgtype.UUID
 	Quantity        int32
@@ -58,7 +59,7 @@ type OrderStatus struct {
 }
 
 type Payment struct {
-	ID            pgtype.UUID
+	ID            uuid.UUID
 	OrderID       pgtype.UUID
 	Amount        pgtype.Numeric
 	Provider      pgtype.Text
@@ -68,7 +69,7 @@ type Payment struct {
 }
 
 type Product struct {
-	ID            pgtype.UUID
+	ID            uuid.UUID
 	Name          string
 	Description   pgtype.Text
 	Price         pgtype.Numeric
@@ -85,7 +86,7 @@ type Role struct {
 }
 
 type User struct {
-	ID           pgtype.UUID
+	ID           uuid.UUID
 	Email        string
 	PasswordHash string
 	FirstName    pgtype.Text

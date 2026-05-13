@@ -3,22 +3,14 @@ package postgre
 import (
 	"context"
 	"e-commerce-api/internal/constants"
+	"e-commerce-api/internal/infrastructure/config"
 	"fmt"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-type DBConfig struct {
-	Username string `yaml:"username" env-required:"true"`
-	Password string `yaml:"password"`
-	Host     string `yaml:"host" env-default:"localhost"`
-	Port     string `yaml:"port" env-default:"5432"`
-	Database string `yaml:"database"`
-	SSLMode  string `yaml:"sslmode"`
-}
-
-func NewPgxPool(cfg DBConfig) (*pgxpool.Pool, error) {
+func NewPgxPool(cfg config.DBConfig) (*pgxpool.Pool, error) {
 	connStr := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&&search_path=public",
 		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.SSLMode)
 

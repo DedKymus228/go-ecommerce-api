@@ -2,6 +2,7 @@ package postgre
 
 import (
 	"e-commerce-api/internal/constants"
+	"e-commerce-api/internal/infrastructure/config"
 	"errors"
 	"fmt"
 
@@ -10,7 +11,7 @@ import (
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 )
 
-func RunMigrations(cfg DBConfig) error {
+func RunMigrations(cfg config.DBConfig) error {
 	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s&&search_path=public",
 		cfg.Username, cfg.Password, cfg.Host, cfg.Port, cfg.Database, cfg.SSLMode)
 

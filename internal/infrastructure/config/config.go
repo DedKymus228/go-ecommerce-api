@@ -1,18 +1,32 @@
 package config
 
 import (
-	"e-commerce-api/internal/server"
 	"log"
-
-	"e-commerce-api/pkg/postgre"
+	"time"
 
 	"github.com/ilyakaznacheev/cleanenv"
 )
 
 type Config struct {
-	Env string           `yaml:"env" env-required:"true"`
-	DB  postgre.DBConfig `yaml:"db"  env-required:"true"`
-	App server.AppConfig `yaml:"app" env-required:"true" `
+	Env string    `yaml:"env" env-required:"true"`
+	DB  DBConfig  `yaml:"db"  env-required:"true"`
+	App AppConfig `yaml:"app" env-required:"true" `
+}
+
+type DBConfig struct {
+	Username string `yaml:"username" env-required:"true"`
+	Password string `yaml:"password"`
+	Host     string `yaml:"host" env-default:"localhost"`
+	Port     string `yaml:"port" env-default:"5432"`
+	Database string `yaml:"database"`
+	SSLMode  string `yaml:"sslmode"`
+}
+
+type AppConfig struct {
+	Port        string        `yaml:"serv_port" env-default:"8080"`
+	SecretJwt   string        `yaml:"secret_jwt" env-required:"true"`
+	RWTimeout   time.Duration `yaml:"rw_timeout" env-default:"10s"`
+	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"120s"`
 }
 
 func GetConfig(path string) *Config {
