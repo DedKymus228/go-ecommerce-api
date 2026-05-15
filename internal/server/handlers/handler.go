@@ -7,14 +7,15 @@ import (
 )
 
 type Handler struct {
-	authService service.Auth
-	logger      *zap.Logger
+	productService service.Product
+	authService    service.Auth
+	logger         *zap.Logger
 }
 
-
-func NewHandler(auth service.Auth, logger *zap.Logger) *Handler {
+func NewHandler(auth service.Auth, product service.Product, logger *zap.Logger) *Handler {
 	return &Handler{
-		authService: auth,
-		logger:      logger,
+		productService: product,
+		authService:    auth,
+		logger:         logger,
 	}
 }

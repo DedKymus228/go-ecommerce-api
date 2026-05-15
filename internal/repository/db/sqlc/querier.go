@@ -13,8 +13,10 @@ import (
 type Querier interface {
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetProductByID(ctx context.Context, id uuid.UUID) (Product, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
+	ListProducts(ctx context.Context) ([]Product, error)
 	UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) error
 }
 
