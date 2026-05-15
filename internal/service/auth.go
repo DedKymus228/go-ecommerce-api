@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	apperrors "e-commerce-api/internal/errors"
 	"e-commerce-api/internal/infrastructure/auth"
 	db "e-commerce-api/internal/repository/db/sqlc"
 	"e-commerce-api/internal/server/dto"
@@ -11,11 +12,6 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
-)
-
-var (
-	ErrUserAlreadyExists  = errors.New("user already exists")
-	ErrInvalidCredentials = errors.New("invalid email or password")
 )
 
 type Auth interface {
@@ -40,7 +36,7 @@ func NewAuthService(repo db.Querier, tokenManager auth.TokenManager, tokenTTl ti
 func (s *AuthService) Register(ctx context.Context, req dto.RegisterRequest) (uuid.UUID, error) {
 	_, err := s.repo.GetUserByEmail(ctx, req.Email)
 	if err == nil {
-		return uuid.Nil, ErrUserAlreadyExists
+		return uuid.Nil, apperrors.ErrUserAlreadyExists
 	}
 
 	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
@@ -66,12 +62,12 @@ func (s *AuthService) Register(ctx context.Context, req dto.RegisterRequest) (uu
 func (s *AuthService) Login(ctx context.Context, req dto.LoginRequest) (string, error) {
 	user, err := s.repo.GetUserByEmail(ctx, req.Email)
 	if err != nil {
-		return "", ErrInvalidCredentials
+		return "", apperrors.ErrInvalidCredentials
 	}
 
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(req.Password))
 	if err != nil {
-		return "", ErrInvalidCredentials
+		return "", apperrors.ErrInvalidCredentials
 	}
 
 	token, err := s.tokenManager.GenerateToken(user.ID.String())
