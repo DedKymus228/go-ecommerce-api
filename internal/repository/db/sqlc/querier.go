@@ -11,12 +11,20 @@ import (
 )
 
 type Querier interface {
+	AddCartItem(ctx context.Context, arg AddCartItemParams) (CartItem, error)
+	ClearCart(ctx context.Context, cartID uuid.UUID) error
+	CreateCart(ctx context.Context, userID uuid.UUID) (Cart, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	DeleteCartItem(ctx context.Context, arg DeleteCartItemParams) error
 	DeleteUser(ctx context.Context, id uuid.UUID) error
+	GetCartByUserID(ctx context.Context, userID uuid.UUID) (Cart, error)
+	GetCartItemByProduct(ctx context.Context, arg GetCartItemByProductParams) (CartItem, error)
+	GetCartItems(ctx context.Context, cartID uuid.UUID) ([]GetCartItemsRow, error)
 	GetProductByID(ctx context.Context, id uuid.UUID) (Product, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserByID(ctx context.Context, id uuid.UUID) (User, error)
 	ListProducts(ctx context.Context) ([]Product, error)
+	UpdateCartItemQuantity(ctx context.Context, arg UpdateCartItemQuantityParams) error
 	UpdateUserRole(ctx context.Context, arg UpdateUserRoleParams) error
 }
 

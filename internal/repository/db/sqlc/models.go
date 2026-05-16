@@ -17,14 +17,14 @@ type Brand struct {
 
 type Cart struct {
 	ID        uuid.UUID
-	UserID    pgtype.UUID
+	UserID    uuid.UUID
 	CreatedAt pgtype.Timestamptz
 }
 
 type CartItem struct {
 	ID        uuid.UUID
-	CartID    pgtype.UUID
-	ProductID pgtype.UUID
+	CartID    uuid.UUID
+	ProductID uuid.UUID
 	Quantity  int32
 }
 
@@ -47,7 +47,7 @@ type Order struct {
 
 type OrderItem struct {
 	ID              uuid.UUID
-	OrderID         pgtype.UUID
+	OrderID         uuid.UUID
 	ProductID       pgtype.UUID
 	Quantity        int32
 	PriceAtPurchase pgtype.Numeric
@@ -60,7 +60,7 @@ type OrderStatus struct {
 
 type Payment struct {
 	ID            uuid.UUID
-	OrderID       pgtype.UUID
+	OrderID       uuid.UUID
 	Amount        pgtype.Numeric
 	Provider      pgtype.Text
 	PaymentStatus pgtype.Text

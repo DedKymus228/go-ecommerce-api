@@ -3,6 +3,7 @@ package server
 import (
 	"e-commerce-api/internal/infrastructure/config"
 	"e-commerce-api/internal/server/handlers"
+	"e-commerce-api/internal/server/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -15,6 +16,7 @@ type Router struct {
 	config  config.AppConfig
 	engine  *gin.Engine
 	srv     *http.Server
+	md      *middleware.Middleware
 }
 
 func NewRouter(logger *zap.Logger, config config.AppConfig, handler handlers.Handler) *Router {

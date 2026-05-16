@@ -1,9 +1,13 @@
 package server
 
+import (
+	"github.com/gin-gonic/gin"
+)
+
 // Map for endpoints
 func (r *Router) Map() {
 
-	api := r.engine.Group("/api")
+	api := r.engine.Group("/api/v1")
 	{
 
 		auth := api.Group("/auth")
@@ -13,12 +17,25 @@ func (r *Router) Map() {
 			auth.POST("/login", r.handler.Login)
 		}
 
-		product := r.engine.Group("/api/v1") // product group without JWT
+		product := r.engine.Group("/product") // product group without JWT
 		{
-			product.GET("/products", r.handler.ListProducts)
+			product.GET("", r.handler.ListProducts)
 
-			product.GET("/products/:id", r.handler.GetProductByID)
+			product.GET("/:id", r.handler.GetProductByID)
 		}
+
+		cart := r.engine.Group("/cart") // cart group with JWT
+		cart.Use(r.md.AuthMiddleware())
+		{
+			cart.GET("", func(*gin.Context) {
+
+			})
+
+			cart.POST("/item", r. )
+
+			cart.DELETE("/item/:id", func(*gin.Context) {})
+		}
+
 	}
 
 }

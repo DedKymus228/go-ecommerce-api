@@ -17,3 +17,12 @@ type LoginRequest struct {
 type ProductByIDRequest struct {
 	ID uuid.UUID `json:"id" binding:"required"`
 }
+
+type AddItemToCartRequest struct {
+	ProductID uuid.UUID `json:"product_id" binding:"required"`
+	Quantity  int32     `json:"quantity" binding:"required,gt=0"`
+}
+
+type DeleteItemFromCartRequest struct {
+	ProductID uuid.UUID `json:"product_id" binding:"required"`
+}

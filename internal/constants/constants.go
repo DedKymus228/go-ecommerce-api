@@ -11,4 +11,5 @@ const (
 	PathOfMigrations = "internal/migrations"
 
 	ShutdownTime = 10 * time.Second
+	UserIDKey    = "userID"
 )
