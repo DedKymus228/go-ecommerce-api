@@ -1,8 +1,13 @@
 package main
 
 import (
+	"e-commerce-api/internal/infrastructure/auth"
 	"e-commerce-api/internal/infrastructure/config"
-	mydb "e-commerce-api/internal/repository/db/sqlc"
+	db "e-commerce-api/internal/repository/db/sqlc"
+	"e-commerce-api/internal/server"
+	"e-commerce-api/internal/server/handlers"
+	"e-commerce-api/internal/server/middleware"
+	"e-commerce-api/internal/service"
 	logging "e-commerce-api/pkg/logger"
 	"e-commerce-api/pkg/postgre"
 	"log"
@@ -15,6 +20,7 @@ var configPath = "config/config.yaml"
 func main() {
 	cfg := config.GetConfig(configPath)
 	logger := logging.NewLogger(cfg.Env)
+	tokenManager := auth.NewJWTManager(cfg.App.SecretJwt, cfg.App.TokenTTl) // В реальном проекте брать ключ из конфига!
 
 	logger.Info("Logger is set up",
 		zap.String("env:", cfg.Env))
@@ -25,19 +31,30 @@ func main() {
 	}
 	defer dbpool.Close()
 
-	db := mydb.New(dbpool)
-	_ = db
-
 	logger.Info("Database connection established")
+
+	repo := db.New(dbpool)
+
+	authService := service.NewAuthService(repo, tokenManager, cfg.App.TokenTTl)
+	productService := service.NewProductService(repo)
+	cartService := service.NewCartService(repo)
+
+	handler := handlers.NewHandler(cartService, authService, productService, logger)
+
+	md := middleware.NewMiddleware(tokenManager)
+
+	router := server.NewRouter(logger, cfg.App, handler, md)
 
 	if err = postgre.RunMigrations(cfg.DB); err != nil {
 		logger.Fatal("migrations fault", zap.Error(err))
 	}
-
 	logger.Info("Migrations applied successfully")
 
-	logger.Info("Server is running")
+	logger.Info("Server is starting...")
+	router.Run()
+
+	router.Shutdown()
+
+	//TODO orders and Admin panel
 
 }
-
-//  serv // di

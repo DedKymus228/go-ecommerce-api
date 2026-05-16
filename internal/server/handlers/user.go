@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func (u *Handler) Register(c *gin.Context) {
+func (h *Handler) Register(c *gin.Context) {
 	var req dto.RegisterRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -17,25 +17,25 @@ func (u *Handler) Register(c *gin.Context) {
 		return
 	}
 
-	userID, err := u.authService.Register(c.Request.Context(), req)
+	userID, err := h.authService.Register(c.Request.Context(), req)
 
 	switch {
 	case errors.Is(err, apperrors.ErrUserAlreadyExists):
 		c.JSON(409, dto.ErrorResponse{Error: err.Error()})
-		u.logger.Error("user already exists", zap.Error(err))
+		h.logger.Error("user already exists", zap.Error(err))
 		return
 	case err == nil:
 		c.JSON(201, dto.RegisterResponse{UserID: userID.String()})
-		u.logger.Info("user registered", zap.String("user_id", userID.String()))
+		h.logger.Info("user registered", zap.String("user_id", userID.String()))
 		return
 	default:
 		c.JSON(500, dto.ErrorResponse{Error: err.Error()})
-		u.logger.Error("failed to register user", zap.Error(err))
+		h.logger.Error("failed to register user", zap.Error(err))
 		return
 	}
 }
 
-func (u *Handler) Login(c *gin.Context) {
+func (h *Handler) Login(c *gin.Context) {
 	var req dto.LoginRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -43,20 +43,20 @@ func (u *Handler) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := u.authService.Login(c.Request.Context(), req)
+	token, err := h.authService.Login(c.Request.Context(), req)
 
 	switch {
 	case errors.Is(err, apperrors.ErrInvalidCredentials):
 		c.JSON(401, dto.ErrorResponse{Error: err.Error()})
-		u.logger.Error("invalid password or email", zap.Error(err))
+		h.logger.Error("invalid password or email", zap.Error(err))
 		return
 	case err == nil:
 		c.JSON(200, dto.LoginResponse{Token: token})
-		u.logger.Info("user logged in")
+		h.logger.Info("user logged in")
 		return
 	default:
 		c.JSON(500, dto.ErrorResponse{Error: "internal server error"})
-		u.logger.Error("failed to login user", zap.Error(err))
+		h.logger.Error("failed to login user", zap.Error(err))
 		return
 	}
 }

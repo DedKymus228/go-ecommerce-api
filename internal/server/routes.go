@@ -19,13 +19,14 @@ type Router struct {
 	md      *middleware.Middleware
 }
 
-func NewRouter(logger *zap.Logger, config config.AppConfig, handler handlers.Handler) *Router {
+func NewRouter(logger *zap.Logger, config config.AppConfig, handler *handlers.Handler, md *middleware.Middleware) *Router {
 	engine := gin.Default()
 
 	return &Router{
-		handler: handler,
+		handler: *handler,
 		logger:  logger,
 		config:  config,
 		engine:  engine,
+		md:      md,
 	}
 }

@@ -12,4 +12,6 @@ const (
 
 	ShutdownTime = 10 * time.Second
 	UserIDKey    = "userID"
+
+	TokenTTl = 24 * time.Hour // no used
 )

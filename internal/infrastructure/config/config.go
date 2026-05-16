@@ -27,6 +27,7 @@ type AppConfig struct {
 	SecretJwt   string        `yaml:"secret_jwt" env-required:"true"`
 	RWTimeout   time.Duration `yaml:"rw_timeout" env-default:"10s"`
 	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"120s"`
+	TokenTTl    time.Duration `yaml:"token_ttl" env-default:"24h"`
 }
 
 func GetConfig(path string) *Config {
