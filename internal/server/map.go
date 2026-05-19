@@ -33,14 +33,13 @@ func (r *Router) Map() {
 		orders := api.Group("/orders") // orders group with JWT
 		orders.Use(r.md.AuthMiddleware())
 		{
-			orders.GET("", r.handler.)
+			orders.GET("", r.handler.CreateOrder)
 
-			orders.GET("")
+			orders.GET("", r.handler.GetOrderByID)
 
-			orders.GET("/:id")
+			orders.GET("/:id", r.handler.ListHistoryOrder)
 
 			orders.POST("/:id/pay") //TODO
-
 
 		}
 

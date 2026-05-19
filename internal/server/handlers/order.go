@@ -35,7 +35,7 @@ func (h *Handler) CreateOrder(c *gin.Context) {
 	}
 
 	h.logger.Info("order created", zap.String("order_id", orderID.String()))
-	c.JSON(http.StatusCreated, dto.OrderResponse{ID: orderID})
+	c.JSON(http.StatusCreated, dto.OrderResponse{ID: orderID.String()})
 	return
 }
 
@@ -58,7 +58,6 @@ func (h *Handler) ListHistoryOrder(c *gin.Context) {
 	for i, order := range orders {
 		resp[i] = resp[i].ToOrderDTO(order)
 	}
-
 
 }
 
