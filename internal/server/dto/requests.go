@@ -26,3 +26,11 @@ type AddItemToCartRequest struct {
 type DeleteItemFromCartRequest struct {
 	ProductID uuid.UUID `json:"product_id" binding:"required"`
 }
+
+type CreateOrderRequest struct {
+	ShippingAddress string `json:"shipping_address" binding:"required"`
+}
+
+type GetOrderRequest struct {
+	OrderId uuid.UUID `json:"order_id" binding:"required"`
+}

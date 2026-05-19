@@ -20,7 +20,7 @@ var configPath = "config/config.yaml"
 func main() {
 	cfg := config.GetConfig(configPath)
 	logger := logging.NewLogger(cfg.Env)
-	tokenManager := auth.NewJWTManager(cfg.App.SecretJwt, cfg.App.TokenTTl) 
+	tokenManager := auth.NewJWTManager(cfg.App.SecretJwt, cfg.App.TokenTTl)
 
 	logger.Info("Logger is set up",
 		zap.String("env:", cfg.Env))
@@ -36,6 +36,7 @@ func main() {
 	repo := db.New(dbpool)
 
 	// SERVICE
+	orderService := service.NewOrderService(repo)
 	authService := service.NewAuthService(repo, tokenManager, cfg.App.TokenTTl)
 	productService := service.NewProductService(repo)
 	cartService := service.NewCartService(repo)
@@ -45,7 +46,7 @@ func main() {
 	md := middleware.NewMiddleware(tokenManager)
 	//
 
-	handler := handlers.NewHandler(cartService, authService, productService, logger)
+	handler := handlers.NewHandler(orderService, cartService, authService, productService, logger)
 	router := server.NewRouter(logger, cfg.App, handler, md)
 
 	if err = postgre.RunMigrations(cfg.DB); err != nil {
@@ -57,7 +58,7 @@ func main() {
 	router.Run()
 
 	router.Shutdown()
-
+	// fix cart handler
 	//TODO orders and Admin panel
 
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	apperrors "e-commerce-api/internal/errors"
 	db "e-commerce-api/internal/repository/db/sqlc"
 	"fmt"
 
@@ -49,7 +50,7 @@ func (o *OrderService) CreateOrder(ctx context.Context, userID uuid.UUID, shippi
 func (o *OrderService) GetHistoryOrders(ctx context.Context, userID uuid.UUID) ([]db.Order, error) {
 	orders, err := o.repo.ListUserOrders(ctx, userID)
 	if err != nil {
-		err = fmt.Errorf("failed to get orders: %w", err)
+		err = apperrors.ErrOrderNotFound
 		return nil, err
 	}
 	return orders, nil

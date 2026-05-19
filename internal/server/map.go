@@ -39,7 +39,7 @@ func (r *Router) Map() {
 
 			orders.GET("/:id")
 
-			orders.POST("/:id/pay")
+			orders.POST("/:id/pay") //TODO
 
 
 		}
