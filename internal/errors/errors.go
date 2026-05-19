@@ -13,3 +13,8 @@ var (
 	ErrCartItemNotFound   = errors.New("item not found in cart")
 	ErrUpdateItemQuantity = errors.New("failed to update item quantity")
 )
+
+var (
+	ErrOrderAccessDenied = errors.New("access to order not allowed")
+	ErrOrderNotFound     = errors.New("order not found")
+)

@@ -37,7 +37,7 @@ type Category struct {
 
 type Order struct {
 	ID              uuid.UUID
-	UserID          pgtype.UUID
+	UserID          uuid.UUID
 	StatusID        pgtype.Int4
 	TotalAmount     pgtype.Numeric
 	ShippingAddress string
@@ -48,7 +48,7 @@ type Order struct {
 type OrderItem struct {
 	ID              uuid.UUID
 	OrderID         uuid.UUID
-	ProductID       pgtype.UUID
+	ProductID       uuid.UUID
 	Quantity        int32
 	PriceAtPurchase pgtype.Numeric
 }

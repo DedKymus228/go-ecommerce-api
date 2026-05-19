@@ -60,7 +60,7 @@ CREATE TABLE order_statuses (
 
 CREATE TABLE orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    user_id UUID REFERENCES users(id) ON DELETE CASCADE NOT NULL,
     status_id INT REFERENCES order_statuses(id),
     total_amount DECIMAL(10, 2) NOT NULL,
     shipping_address TEXT NOT NULL,
@@ -71,7 +71,7 @@ CREATE TABLE orders (
 CREATE TABLE order_items (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     order_id UUID REFERENCES orders(id) ON DELETE CASCADE NOT NULL,
-    product_id UUID REFERENCES products(id) ON DELETE SET NULL,
+    product_id UUID REFERENCES products(id) ON DELETE CASCADE NOT NULL,
     quantity INT NOT NULL CHECK (quantity > 0),
     price_at_purchase DECIMAL(10, 2) NOT NULL
 );
