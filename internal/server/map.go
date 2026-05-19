@@ -30,6 +30,20 @@ func (r *Router) Map() {
 			cart.DELETE("/items/:id", r.handler.RemoveFromCart)
 		}
 
+		orders := api.Group("/orders") // orders group with JWT
+		orders.Use(r.md.AuthMiddleware())
+		{
+			orders.GET("", r.handler.)
+
+			orders.GET("")
+
+			orders.GET("/:id")
+
+			orders.POST("/:id/pay")
+
+
+		}
+
 	}
 
 }

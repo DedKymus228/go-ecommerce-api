@@ -20,7 +20,7 @@ var configPath = "config/config.yaml"
 func main() {
 	cfg := config.GetConfig(configPath)
 	logger := logging.NewLogger(cfg.Env)
-	tokenManager := auth.NewJWTManager(cfg.App.SecretJwt, cfg.App.TokenTTl) // В реальном проекте брать ключ из конфига!
+	tokenManager := auth.NewJWTManager(cfg.App.SecretJwt, cfg.App.TokenTTl) 
 
 	logger.Info("Logger is set up",
 		zap.String("env:", cfg.Env))
@@ -35,14 +35,17 @@ func main() {
 
 	repo := db.New(dbpool)
 
+	// SERVICE
 	authService := service.NewAuthService(repo, tokenManager, cfg.App.TokenTTl)
 	productService := service.NewProductService(repo)
 	cartService := service.NewCartService(repo)
+	//
+
+	// MIDDLEWARE
+	md := middleware.NewMiddleware(tokenManager)
+	//
 
 	handler := handlers.NewHandler(cartService, authService, productService, logger)
-
-	md := middleware.NewMiddleware(tokenManager)
-
 	router := server.NewRouter(logger, cfg.App, handler, md)
 
 	if err = postgre.RunMigrations(cfg.DB); err != nil {
